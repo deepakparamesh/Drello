@@ -1,70 +1,74 @@
-const Board = require('../models/board');
-const User = require('../models/user');
+const boardModel = require('../models/board');
 
-// Create a new Board
+/**
+ * @function createBoard - API/fn used to create a new Board .
+ *
+ * @param {HTTPRequest} req  - sends board object as request.
+ * @param {HTTPResponse} res - responses true if the saved successfully.
+ */
 exports.createBoard = function (req, res) {
-  var board = new Board({
+  const board = {
     title: req.body.title,
-    _user: req.body.userId
-  });
-  board.save(function (error, board) {
-    if (board) {
-      Board.find({ _user: req.body.userId }, function (error, boards) {
-        if (boards) {
-          res.json(boards);
-        }
-        else if(error){
-          console.error('Failed to save' + error.stack);
-        }
-      });
-    }
-  });
-}
-
-
-exports.getBoards = function (req, res) {
-  Board.find({
-    _user: req.body.username
-  }, function (error, boards) {
-    if (boards) {
-      res.json(boards);
-    } else if (error) {
-      console.log("errorrrrrr" + error.stack);
-    }
-  });
-}
-
-
-//POST | updates board by board id
-exports.editBoard = function (req, res) {
-  var board = { _id: req.params.board_id };
-  Board.update(board, { title: req.body.title }, function (error, board) {
-    if (board) {
-      Board.find({}, function (error, board) {
-        res.json(board);
-      })
-    } else if (error) {
-      console.log(error.stack);
-      res.redirect('/error');
+    _user: req.body._user
+  }
+  boardModel.createBoard(board, (err, result) => {
+    if(err) {
+      return res.json({success: false, msg: 'Failed to create a Board' , error: err});
+    } else {
+      return res.json({success: true, msg: 'Successfully create a Board', result: result});
     }
   })
 }
 
-//POST | deletes board by board id
-exports.deleteBoard = function (req, res) {
-  var board = new Board({ _id: req.params.board_id });
-  board.remove(function (error, board) {
-    console.log(board);
-    if (board) {
-      Board.find({ _id: req.params.board_id }, function (error, boards) {
-        if (boards) {
-          res.json(boards);
-        }
-        else if (error) throw error;
-      });
+/**
+ * @function getBoards - API/fn used to get all the board accoding to query.
+ *
+ * @param {HTTPRequest} req  - sends query object as request/query
+ * @param {HTTPResponse} res - responses true if the fetched successfully.
+ */
+exports.getBoards = function (req, res) {
+  const query = { _user : req.body.username }
+  boardModel.getAll(query, (err, result) => {
+    if(err) {
+      return res.json({ success: false, message: 'Error in finding Boards', error: err });
+    } else {
+      return res.json({ success: true, message: 'Successfully found Boards', result: result });
     }
-    else if (error) {
-      console.error('Failed to save' + error.stack);
+  });
+}
+
+/**
+ * @function editBoard - API/fn used to update the board.
+ *
+ * @param {HTTPRequest} req  - sends board and update object as request/query.
+ * @param {HTTPResponse} res - responses true if the saved successfully.
+ */
+exports.editBoard = function (req, res) {
+  const board = { _id: req.params.board_id };
+  const update = { title: req.body.title };
+  boardModel.update(board, update, (error , result) => {
+    if(error) {
+      return res.json({ success: false, message: 'Error in updating Boards', error: err });
+    } else {
+      return res.json({ success: true, message: 'Successfully updated Board', result: result });
+    }
+  })
+}
+
+
+/**
+ * @function deleteBoard - API/fn used to delete the board.
+ *
+ * @param {HTTPRequest} req  - sends id object as query.
+ * @param {HTTPResponse} res - responses true if the saved successfully.
+ */
+exports.deleteBoard = function (req, res) {
+  const boardId = { _id: req.params.board_id };
+  boardModel.remove(boardId, (err, result) => {
+    if (err) {
+      return res.json({ success: false, message: 'Error in deleting Boards', error: err });
+    } else {
+      return res.json({ success: true, message: 'Successfully deleted Board', result: result });
     }
   })
 }

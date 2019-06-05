@@ -4,7 +4,7 @@ const BoardController = require('../controllers/boards-controller');
 
 router.post('/create', BoardController.createBoard);
 
-router.get('/get', BoardController.getBoards);
+router.post('/get', BoardController.getBoards);
 
 router.post('/edit/:board_id', BoardController.editBoard);
 
