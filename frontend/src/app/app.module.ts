@@ -14,6 +14,8 @@ import { DashboardComponent } from './dashboard/dashboard.component';
 import { DashboardService } from './dashboard/dashboard.service';
 import { BoardService } from './board/board.service';
 import { HttpClient } from './httpclient.service';
+import { ListComponent } from './list/list.component';
+import { CardComponent } from './card/card.component';
 
 const appRoutes: Routes = [
   {path: 'b/:id', component: BoardComponent},
@@ -26,7 +28,9 @@ const appRoutes: Routes = [
   declarations: [
     AppComponent,
     DashboardComponent,
-    BoardComponent
+    BoardComponent,
+    ListComponent,
+    CardComponent
   ],
   imports: [
     BrowserModule,

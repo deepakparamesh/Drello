@@ -21,9 +21,12 @@ export class BoardService {
     }));
   }
 
+  // get(id: string) {
+  //   return this._http.get(this.apiUrl + )
+  // }
+
   post(board: Board) {
     const body = JSON.stringify(board);
-
     return this._http.post(this.apiUrl + '/create', body).pipe(map((res: Response) => {
       return <Board>res.json();
     }));

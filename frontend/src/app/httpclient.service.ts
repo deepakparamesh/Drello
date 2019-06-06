@@ -41,6 +41,7 @@ export class HttpClient {
       if (url.charAt(0) === '/') {
         url = url.substring(1);
       }
+      console.log(this.rootUrl + 'rooturl is here');
       url = this.rootUrl + url;
     }
     return url;
