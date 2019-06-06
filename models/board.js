@@ -36,6 +36,18 @@ module.exports.getAll = function(query, callback) {
 }
 
 /**
+ * @function getById - gets the board according to query
+ *
+ * @param {object} query
+ * @param {function} callback
+ */
+module.exports.getById = (query, callback) => {
+  Board.findById(query, (err, result) => {
+    callback(err, result)
+  });
+}
+
+/**
  * @function updateBoard - updates board according to query
  *
  * @param {object} query

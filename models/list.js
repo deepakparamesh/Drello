@@ -5,7 +5,8 @@ const listSchema = new Schema({
   list_title: { type: String, required: true },
   _board: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Board' }],
   created_at: Date,
-  updated_at: Date
+  updated_at: Date,
+  order: Number
 });
 
 const List = module.exports = mongoose.model('List', listSchema);

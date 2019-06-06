@@ -2,9 +2,8 @@ import { EventEmitter, Injectable } from '@angular/core';
 import { List } from './list/list';
 import { Card } from './card/card';
 import { environment } from '../environments/environment';
-
+// import { io }  from '../../node_modules/socket.io-client/dist/socket.io.js';
 declare var io;
-
 @Injectable()
 export class WebSocketService {
   socket: any;

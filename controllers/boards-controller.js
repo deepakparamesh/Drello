@@ -1,4 +1,6 @@
 const boardModel = require('../models/board');
+const listModel = require('../models/list');
+const cardModel = require('../models/card');
 
 /**
  * @function createBoard - API/fn used to create a new Board .
@@ -38,6 +40,35 @@ exports.getBoards = function (req, res) {
 }
 
 /**
+ * @function getBoardById - API/fn used to get the board accoding to id.
+ *
+ * @param {HTTPRequest} req  - sends query object as request/query
+ * @param {HTTPResponse} res - responses true if the fetched successfully.
+ */
+exports.getBoardById = function(req, res) {
+  const query = { _id: req.params.id };
+  boardModel.getById(query, (err, result) => {
+    if (err) {
+      return res.json({ success: false, message: 'Error in finding Board', error: err });
+    } else {
+      return res.json({ success: true, message: 'Successfully found Board', result: result });
+    }
+  });
+}
+
+// exports.getBoardList = function(req, res) {
+//   const query = { _board: req.params.board_id}
+//   listModel.getAll(query, (err, result) => {
+//     if(err) {
+//       return res.json({ success: false, message: 'Error in finding Boards', error: err });
+//     } else {
+//       return res.json({ success: true, message: 'Successfully found Boards', result: result });
+//     }
+//   });
+// }
+
+
+/**
  * @function editBoard - API/fn used to update the board.
  *
  * @param {HTTPRequest} req  - sends board and update object as request/query.
@@ -72,3 +103,4 @@ exports.deleteBoard = function (req, res) {
     }
   })
 }
+

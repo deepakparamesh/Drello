@@ -1,11 +1,17 @@
-<div class="board-title">
+<div *ngIf="board" class="board-title">
   <span [style.display]="editingTilte ? 'none' : ''" (click)="editTitle()">
-    Board Title
+    {{ board?.title }}
   </span>
-  <input type="text"
+  <input
     [style.display]="editingTilte ? '' : 'none'"
-    (keyup) = "blurOnEnter($enter)"
+    (keyup) = "blurOnEnter($event)"
     (blur)="updateBoard()"
-    
-  >
+    [(ngModel)] = "board.title"
+  />
 </div>
+
+<section *ngIf="board" id="main">
+  <div *ngFor="let list of board._lists" class="sortable-list">
+    <li>{{list}}</li>
+  </div>
+</section>

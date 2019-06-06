@@ -4,6 +4,8 @@ const Schema = mongoose.Schema;
 const cardSchema = new Schema({
   card_title: { type: String, required: true },
   _list: [{ type: mongoose.Schema.Types.ObjectId, ref: 'List' }],
+  _board: {type: String},
+  order: Number,
   created_at: Date,
   updated_at: Date,
 });

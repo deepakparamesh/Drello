@@ -6,7 +6,13 @@ router.post('/create', BoardController.createBoard);
 
 router.post('/get', BoardController.getBoards);
 
-router.post('/edit/:board_id', BoardController.editBoard);
+router.get('/get/:id', BoardController.getBoardById);
+
+// router.get('/:id/list', BoardController.getBoardList);
+
+// router.get('/:id/cards', BoardController.getBoardCard);
+
+router.put('/edit/:board_id', BoardController.editBoard);
 
 router.post('/delete/:board_id', BoardController.deleteBoard);
 
