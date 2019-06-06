@@ -1,3 +1,11 @@
-<p>
-  board works!
-</p>
+<div class="board-title">
+  <span [style.display]="editingTilte ? 'none' : ''" (click)="editTitle()">
+    Board Title
+  </span>
+  <input type="text"
+    [style.display]="editingTilte ? '' : 'none'"
+    (keyup) = "blurOnEnter($enter)"
+    (blur)="updateBoard()"
+    
+  >
+</div>

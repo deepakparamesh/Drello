@@ -28,4 +28,18 @@ export class BoardService {
       return <Board>res.json();
     }));
   }
+
+  put(board: Board) {
+    const body = JSON.stringify(board);
+    console.log(body);
+    this._http.put(this.apiUrl + '/edit/' + board._id, body)
+      .toPromise()
+      .then(res => console.log(res.json()));
+  }
+
+  delete(board: Board) {
+    this._http.delete(this.apiUrl + '/delete/' + board._id)
+      .toPromise()
+      .then(res => console.log(res.json()));
+  }
 }

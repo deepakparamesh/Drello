@@ -6,6 +6,8 @@ const mongoose = require('mongoose');
 const config = require('./config/database');
 const users = require('./routes/users');
 const boards = require('./routes/boards');
+const lists = require('./routes/lists');
+const cards = require('./routes/cards');
 
 // connect to database
 mongoose.connect(config.database , {useNewUrlParser: true});
@@ -33,6 +35,8 @@ app.use(cors());
 app.use(bodyParser.json());
 app.use('/users', users);
 app.use('/boards', boards);
+app.use('/lists', lists);
+app.use('/cards', cards);
 
 // Index Route
 app.get('/', (req, res) => {
