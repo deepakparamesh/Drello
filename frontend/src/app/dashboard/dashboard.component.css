@@ -4,6 +4,7 @@
   background-color: white;
   min-height: calc(100% - 4em);
   display: inline-block;
+  width: 100%;
 }
 
 h2 { 

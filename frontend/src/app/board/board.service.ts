@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Http, Response } from '@angular/http';
+import { Http, Response, Headers } from '@angular/http';
 import { Observable } from 'rxjs';
 import { catchError, map } from 'rxjs/operators';
 import { HttpClient } from '../httpclient.service';
@@ -11,13 +11,21 @@ export class BoardService {
   apiUrl = '/boards';
   boardCache: Board[] = [];
 
-  constructor(private _http: HttpClient) {
+  constructor(private _http: HttpClient, private http: Http) {
 
   }
 
-  getAll(): Observable<any>  {
-    return this._http.get(this.apiUrl).pipe(map( (res: Response)  =>  <Board[]>res.json().data ) );
+  getAll(userObj): Observable<any>  {
+    return this._http.post(this.apiUrl + '/get', userObj).pipe(map((res: Response) => {
+      return <Board[]>res.json();
+    }));
   }
 
-  
+  post(board: Board) {
+    const body = JSON.stringify(board);
+
+    return this._http.post(this.apiUrl + '/create', body).pipe(map((res: Response) => {
+      return <Board>res.json();
+    }));
+  }
 }

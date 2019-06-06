@@ -21,7 +21,7 @@ export class HttpClient {
     return this._http.get(url, options || this.options);
   }
 
-  public post(url: string, body: string, options?: RequestOptionsArgs) {
+  public post(url: string, body: Object, options?: RequestOptionsArgs) {
     url = this.handleUrl(url);
     return this._http.post(url, body, options || this.options);
   }

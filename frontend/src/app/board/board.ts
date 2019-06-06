@@ -4,6 +4,7 @@
 export class Board {
 	_id: string;
 	title: string;
+	_user: string;
 	// columns: Column[];
   // cards: Card[];
 }

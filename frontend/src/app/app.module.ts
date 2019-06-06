@@ -10,6 +10,11 @@ import { AppComponent } from './app.component';
 import { BoardComponent } from './board/board.component';
 import { DashboardComponent } from './dashboard/dashboard.component';
 
+
+import { DashboardService } from './dashboard/dashboard.service';
+import { BoardService } from './board/board.service';
+import { HttpClient } from './httpclient.service';
+
 const appRoutes: Routes = [
   {path: 'b/:id', component: BoardComponent},
   {path: '', component: DashboardComponent}
@@ -29,7 +34,7 @@ const appRoutes: Routes = [
     HttpModule,
     RouterModule.forRoot(appRoutes)
   ],
-  providers: [],
+  providers: [DashboardService, BoardService, HttpClient],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
