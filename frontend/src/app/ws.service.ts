@@ -1,40 +1,38 @@
-import { EventEmitter, Injectable } from '@angular/core';
-import { List } from './list/list';
-import { Card } from './card/card';
-import { environment } from '../environments/environment';
-// import { io }  from '../../node_modules/socket.io-client/dist/socket.io.js';
+import {Injectable, EventEmitter} from '@angular/core';
+import {Board} from './board/board';
+import {Column} from './column/column';
+import {Card} from './card/card';
+import { ROOT_URL } from './constants'
+
 declare var io;
+
 @Injectable()
 export class WebSocketService {
   socket: any;
-  public onListAdd: EventEmitter<List>;
+  public onColumnAdd: EventEmitter<Column>;
   public onCardAdd: EventEmitter<Card>;
-  public onListUpdate: EventEmitter<List>;
+  public onColumnUpdate: EventEmitter<Column>;
   public onCardUpdate: EventEmitter<Card>;
 
-
   constructor() {
-    this.onListAdd = new EventEmitter();
+    this.onColumnAdd = new EventEmitter();
     this.onCardAdd = new EventEmitter();
-    this.onListUpdate = new EventEmitter();
+    this.onColumnUpdate = new EventEmitter();
     this.onCardUpdate = new EventEmitter();
   }
 
-  connect() {
-    this.socket = io(environment.apiUrl);
+  connect(){
+    this.socket = io(ROOT_URL);
 
-    this.socket.on('addList', data => {
-      this.onListAdd.emit(<List>data.list);
+    this.socket.on('addColumn', data => {
+      this.onColumnAdd.emit(<Column>data.column);
     });
-
     this.socket.on('addCard', data => {
       this.onCardAdd.emit(<Card>data.card);
     });
-
-    this.socket.on('updateList', data => {
-      this.onListAdd.emit(<List>data.list);
+    this.socket.on('updateColumn', data => {
+      this.onColumnUpdate.emit(<Column>data.column);
     });
-
     this.socket.on('updateCard', data => {
       this.onCardUpdate.emit(<Card>data.card);
     });
@@ -48,16 +46,16 @@ export class WebSocketService {
     this.socket.emit('leaveBoard', boardId);
   }
 
-  addList(boardId: string, list: List) {
-    this.socket.emit('addList', { boardId: boardId, list: List });
+  addColumn(boardId:string, column: Column){
+    this.socket.emit('addColumn', { boardId: boardId, column: column });
   }
 
   addCard(boardId: string, card: Card) {
     this.socket.emit('addCard', { boardId: boardId, card: card });
   }
 
-  updateList(boardId: string, list: List) {
-    this.socket.emit('updateList', { boardId: boardId, list: list });
+  updateColumn(boardId: string, column: Column) {
+    this.socket.emit('updateColumn', { boardId: boardId, column: column });
   }
 
   updateCard(boardId: string, card: Card) {

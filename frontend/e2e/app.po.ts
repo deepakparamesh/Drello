@@ -1,6 +1,6 @@
-import { browser, by, element } from 'protractor';
+import { browser, element, by } from 'protractor';
 
-export class AppPage {
+export class A2gtmPage {
   navigateTo() {
     return browser.get('/');
   }

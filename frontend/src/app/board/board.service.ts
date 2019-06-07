@@ -1,70 +1,61 @@
-import { Injectable } from '@angular/core';
-import { Http, Response, Headers } from '@angular/http';
-import { Observable, forkJoin } from 'rxjs';
-import { catchError, map } from 'rxjs/operators';
-import { HttpClient } from '../httpclient.service';
-import { Board } from '../board/board';
-import { List } from '../list/list';
-import { Card } from '../card/card';
-
+import {Injectable} from '@angular/core';
+import {Http, Response} from '@angular/http';
+import {Observable} from 'rxjs/Rx';
+import {HttpClient} from '../httpclient';
+import {Board} from '../board/board';
+import {Column} from '../column/column';
+import {Card} from '../card/card';
 
 @Injectable()
 export class BoardService {
-  apiUrl = '/boards';
-  boardCache: Board[] = [];
+  apiUrl = '/board';
+  boardsCache: Board[] = [];
 
-  constructor(private _http: HttpClient, private http: Http) {
-
+  constructor(private _http: HttpClient) {
   }
 
-  getAll(userObj): Observable<any>  {
-    return this._http.post(this.apiUrl + '/get', userObj).pipe(map((res: Response) => {
-      return <Board[]>res.json();
-    }));
+  getAll() {
+    return this._http.get(this.apiUrl).map((res: Response) => <Board[]>res.json().data);
   }
 
   get(id: string) {
-    return this._http.get(this.apiUrl + '/get/' + id).pipe(map((res: Response) => {
-      return <Board[]>res.json();
-    }));
+    return this._http.get(this.apiUrl + '/' + id)
+      .map((res: Response) => <Board>res.json().data);
   }
 
-  getLists(id: string) {
-    const boardObj = { board_id: id };
-    return this._http.post('/lists/get' , boardObj).pipe(map((res: Response) => {
-      return <List>res.json();
-    }));
+  getBoardWithColumnsAndCards(id: string){
+    return Observable.forkJoin(this.get(id), this.getColumns(id), this.getCards(id));
+  }
+
+  getColumns(id: string) {
+    return this._http.get(this.apiUrl + '/' + id + '/columns')
+      .map((res: Response) => <Column[]>res.json().data);
   }
 
   getCards(id: string) {
-    const boardObj = { board_id: id };
-    return this._http.post('/cards/get', boardObj).pipe(map((res: Response) => {
-      return <Card>res.json();
-    }));
-  }
-
-  getBoardWithListsAndCards(id: string) {
-    return forkJoin( this.get(id), this.getLists(id), this.getCards(id));
-  }
-
-  post(board: Board) {
-    const body = JSON.stringify(board);
-    return this._http.post(this.apiUrl + '/create', body).pipe(map((res: Response) => {
-      return <Board>res.json();
-    }));
+    return this._http.get(this.apiUrl + '/' + id + '/cards')
+      .map((res: Response) => <Card[]>res.json().data);
   }
 
   put(board: Board) {
-    const body = JSON.stringify(board);
+    let body = JSON.stringify(board);
     console.log(body);
-    this._http.put(this.apiUrl + '/edit/' + board._id, body)
+    this._http.put(this.apiUrl + '/' + board._id, body)
       .toPromise()
       .then(res => console.log(res.json()));
   }
 
+  post(board: Board) {
+    let body = JSON.stringify(board);
+    
+    return this._http.post(this.apiUrl, body)
+      .map((res: Response) => <Board>res.json().data);
+  }
+
   delete(board: Board) {
-    this._http.delete(this.apiUrl + '/delete/' + board._id)
+    this._http.delete(this.apiUrl + '/' + board._id)
       .toPromise()
       .then(res => console.log(res.json()));
   }
+
 }

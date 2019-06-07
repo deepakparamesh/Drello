@@ -1,10 +1,9 @@
-import {List} from '../list/list';
+import {Column} from '../column/column';
 import {Card} from '../card/card';
 
 export class Board {
 	_id: string;
 	title: string;
-	_user: string;
-	_lists: List[];
+	columns: Column[];
   cards: Card[];
 }

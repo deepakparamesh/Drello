@@ -1,37 +1,36 @@
-import { Component, OnInit } from '@angular/core';
-import { Router } from '@angular/router';
-import { Board } from '../board/board';
-import { BoardService } from '../board/board.service';
+import {Component, OnInit} from '@angular/core';
+import {Router} from '@angular/router';
+import {BoardService} from '../board/board.service';
+import {Board} from '../board/board'
 
 @Component({
-  selector: 'app-dashboard',
+  selector: 'gtm-dashboard',
   templateUrl: './dashboard.component.html',
-  styleUrls: ['./dashboard.component.css']
+  styleUrls: ['./dashboard.component.css'],
 })
 export class DashboardComponent implements OnInit {
   boards: Board[];
-  constructor(private boardService:  BoardService,
-    private _router: Router) { }
+
+  constructor(private _bs: BoardService,
+      private _router: Router) { }
 
   ngOnInit() {
-    this.getBoards();
-  }
-
-  getBoards() {
-    const userObj = {username: 'deepak'};
-    this.boardService.getAll(userObj).subscribe((boards: Board[]) => {
+    this.boards = [];
+    this._bs.getAll().subscribe((boards:Board[]) => {
       this.boards = boards;
     });
+    setTimeout(function() {
+      document.getElementById('content-wrapper').style.backgroundColor = "#fff";
+    }, 100);
   }
 
-  public addBoard() {
-    const boardObj = { title: 'New Board',
-                       _user: 'deepak' };
-
-    this.boardService.post(<Board>boardObj)
+  public addBoard(){
+    console.log('Adding new board');
+    this._bs.post(<Board>{ title: "New board" })
       .subscribe((board: Board) => {
-        this._router.navigate(['b', board['result']._id]);
-      });
+        this._router.navigate(['/b', board._id]);
+        console.log('new board added');
+    });
   }
 
 }

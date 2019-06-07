@@ -1,87 +1,102 @@
-import { Component, OnInit, OnDestroy, ElementRef } from '@angular/core';
+import { Component, Input, OnInit, OnDestroy, AfterViewInit, ElementRef } from '@angular/core';
+import { Observable } from 'rxjs/Rx';
 import { Board } from '../board/board';
+import { Column } from '../column/column';
+import { Card } from '../card/card';
 import { BoardService } from './board.service';
-import { Router, Params, ActivatedRoute } from '@angular/router';
+import { ColumnService } from '../column/column.service';
 import { WebSocketService } from '../ws.service';
-import { ListService } from '../list/list.service';
-import { List } from '../list/list';
+import { ColumnComponent } from '../column/column.component';
+import { OrderBy } from '../pipes/orderby.pipe';
+import { Where } from '../pipes/where.pipe';
+import { Router, Params, ActivatedRoute } from '@angular/router';
 
 declare var jQuery: any;
-const curYPos = 0,
-      curXPos = 0,
-      curDown = false;
+var curYPos = 0,
+  curXPos = 0,
+  curDown = false;
 
 @Component({
-  selector: 'app-board',
+  selector: 'gtm-board',
   templateUrl: './board.component.html',
   styleUrls: ['./board.component.css']
 })
 export class BoardComponent implements OnInit, OnDestroy {
   board: Board;
-  addingList = false;
-  addListText: string;
+  addingColumn = false;
+  addColumnText: string;
   editingTilte = false;
   currentTitle: string;
   boardWidth: number;
-  listsAdded = 0;
+  columnsAdded: number = 0;
 
-  constructor(private _router: Router,
-              private _route: ActivatedRoute,
-              private _ws: WebSocketService,
-              private _boardService: BoardService,
-              private _listService: ListService,
-              private el: ElementRef
-              ) { }
+  constructor(public el: ElementRef,
+    private _ws: WebSocketService,
+    private _boardService: BoardService,
+    private _columnService: ColumnService,
+    private _router: Router,
+    private _route: ActivatedRoute) {
+  }
 
   ngOnInit() {
     this._ws.connect();
-    this._ws.onListAdd.subscribe(list => {
-      this.board._lists.push(list);
+    this._ws.onColumnAdd.subscribe(column => {
+      console.log('adding column from server');
+      this.board.columns.push(column);
       this.updateBoardWidth();
     });
 
     this._ws.onCardAdd.subscribe(card => {
+      console.log('adding card from server');
       this.board.cards.push(card);
     });
-    const boardId = this._route.snapshot.params['id'];
 
-    this._boardService.getBoardWithListsAndCards(boardId).subscribe(data => {
-      console.log(data);
-      this._ws.join(boardId);
+    let boardId = this._route.snapshot.params['id'];
 
-      this.board = data[0]['result'];
+    //let boardId = this._routeParams.get('id');
+    this._boardService.getBoardWithColumnsAndCards(boardId)
+      .subscribe(data => {
+        console.log(`joining board ${boardId}`);
+        this._ws.join(boardId);
 
-      document.title = 'Drello';
-      this.setupView();
-    });
+        this.board = data[0];
+        this.board.columns = data[1];
+        this.board.cards = data[2];
+        document.title = this.board.title + " | Generic Task Manager";
+        this.setupView();
+      });
   }
 
-  ngOnDestroy() {
+  ngOnDestroy(){
+    console.log(`leaving board ${this.board._id}`);
     this._ws.leave(this.board._id);
   }
 
   setupView() {
-    const component = this;
+    let component = this;
     setTimeout(function () {
-      let startList;
+      var startColumn;
       jQuery('#main').sortable({
-        items: '.sortable-list',
+        items: '.sortable-column',
         handler: '.header',
-        connectWith: '#main',
-        placeholder: 'list-placeholder',
+        connectWith: "#main",
+        placeholder: "column-placeholder",
         dropOnEmpty: true,
         tolerance: 'pointer',
         start: function (event, ui) {
-          ui.placeholder.height(ui.item.find('.list').outerHeight());
-          startList = ui.item.parent();
+          ui.placeholder.height(ui.item.find('.column').outerHeight());
+          startColumn = ui.item.parent();
         },
         stop: function (event, ui) {
-          const listId = ui.item.find('.list').attr('list-id');
-          component.updateListOrder({
-            listId: listId
+          var columnId = ui.item.find('.column').attr('column-id');
+
+          component.updateColumnOrder({
+            columnId: columnId
           });
         }
       }).disableSelection();
+
+      //component.bindPane();;
 
       window.addEventListener('resize', function (e) {
         component.updateBoardWidth();
@@ -91,42 +106,30 @@ export class BoardComponent implements OnInit, OnDestroy {
     }, 100);
   }
 
-  updateListOrder(event) {
-    let i = 0,
-      elBefore = -1,
-      elAfter = -1,
-      newOrder = 0;
-    const listEl = jQuery('#main'),
-          listArr = listEl.find('.list');
-
-    for (i = 0; i < listArr.length - 1; i++) {
-      if (listEl.find('.list')[i].getAttribute('list-id') === event.listId) {
-        break;
+  bindPane() {
+    let el = document.getElementById('content-wrapper');
+    el.addEventListener('mousemove', function (e) {
+      e.preventDefault();
+      if (curDown === true) {
+        el.scrollLeft += (curXPos - e.pageX) * .25;// x > 0 ? x : 0;
+        el.scrollTop += (curYPos - e.pageY) * .25;// y > 0 ? y : 0;
       }
-    }
+    });
 
-    if (i > 0 && i < listArr.length - 1) {
-      elBefore = +listArr[i - 1].getAttribute('list-order');
-      elAfter = +listArr[i + 1].getAttribute('list-order');
-
-      newOrder = elBefore + ((elAfter - elBefore) / 2);
-    } else if (i === listArr.length - 1) {
-      elBefore = +listArr[i - 1].getAttribute('list-order');
-      newOrder = elBefore + 1000;
-    } else if (i === 0) {
-      elAfter = +listArr[i + 1].getAttribute('list-order');
-      newOrder = elAfter / 2;
-    }
-
-    const list = this.board._lists.filter(x => x._id === event.listId)[0];
-    list.order = newOrder;
-    this._listService.put(list).then(res => {
-      this._ws.updateList(this.board._id, list);
+    el.addEventListener('mousedown', function (e) {
+      if (e.srcElement.id === 'main' || e.srcElement.id === 'content-wrapper') {
+        curDown = true;
+      }
+      curYPos = e.pageY; curXPos = e.pageX;
+    });
+    el.addEventListener('mouseup', function (e) {
+      curDown = false;
     });
   }
 
   updateBoardWidth() {
-    this.boardWidth = ((this.board._lists.length + 1) * 200) + 10;
+    // this.boardWidth = ((this.board.columns.length + (this.columnsAdded > 0 ? 1 : 2)) * 280) + 10;
+    this.boardWidth = ((this.board.columns.length + 1) * 280) + 10;
 
     if (this.boardWidth > document.body.scrollWidth) {
       document.getElementById('main').style.width = this.boardWidth + 'px';
@@ -134,66 +137,151 @@ export class BoardComponent implements OnInit, OnDestroy {
       document.getElementById('main').style.width = '100%';
     }
 
-    if (this.listsAdded > 0) {
-      const wrapper = document.getElementById('content-wrapper');
+    if (this.columnsAdded > 0) {
+      let wrapper = document.getElementById('content-wrapper');
       wrapper.scrollLeft = wrapper.scrollWidth;
     }
 
-    this.listsAdded++;
+    this.columnsAdded++;
+  }
+
+  updateBoard() {
+    if (this.board.title && this.board.title.trim() !== '') {
+      this._boardService.put(this.board);
+    } else {
+      this.board.title = this.currentTitle;
+    }
+    this.editingTilte = false;
+    document.title = this.board.title + " | Generic Task Manager";
   }
 
   editTitle() {
     this.currentTitle = this.board.title;
     this.editingTilte = true;
 
-    const input = this.el.nativeElement
-      .getElementByClassName('board-title')[0]
-      .getElementByTagName('input')[0];
+    let input = this.el.nativeElement
+      .getElementsByClassName('board-title')[0]
+      .getElementsByTagName('input')[0];
 
-    setTimeout( function() { input.focus(); }, 0);
+    setTimeout(function () { input.focus(); }, 0);
   }
 
-  blurOnEnter($event) {
-    if ($event.keyCode === 13) {
-      $event.target.blur();
-    }
-  }
-
-  updateBoard() {
-    if (this.board.title && this.board.title.trim() !== '') {
-      console.log('im perfect' + this.board);
-      this._boardService.put(this.board);
-    } else {
-      this.board.title = this.currentTitle;
-    }
-    this.editingTilte = false;
-    document.title = this.board.title + ' | Drello';
-  }
-
-  updateListElements(list: List) {
-    const listArr = jQuery('#main .list');
-    const listEl = jQuery('#main .list[listid=' + list._id + ']');
+  updateColumnElements(column: Column) {
+    let columnArr = jQuery('#main .column');
+    let columnEl = jQuery('#main .column[columnid=' + column._id + ']');
     let i = 0;
-    for ( ; i < listArr.length - 1; i++) {
-      // tslint:disable-next-line:no-unused-expression
-      list.order < +listArr[i].getAttribute('list-order');
+    for (; i < columnArr.length - 1; i++) {
+      column.order < +columnArr[i].getAttibute('column-order');
       break;
     }
 
-    listEl.remove().insertBefore(listArr[i]);
+    columnEl.remove().insertBefore(columnArr[i]);
   }
 
-  enableAddList() {
-    this.addingList = true;
-    const input = jQuery('.add-list')[0]
-    .getElementByTagName('input')[0];
+  updateColumnOrder(event) {
+    let i: number = 0,
+      elBefore: number = -1,
+      elAfter: number = -1,
+      newOrder: number = 0,
+      columnEl = jQuery('#main'),
+      columnArr = columnEl.find('.column');
 
-    setTimeout(() => {input.focus(); }, 0);
+    for (i = 0; i < columnArr.length - 1; i++) {
+      if (columnEl.find('.column')[i].getAttribute('column-id') == event.columnId) {
+        break;
+      }
+    }
+
+    if (i > 0 && i < columnArr.length - 1) {
+      elBefore = +columnArr[i - 1].getAttribute('column-order');
+      elAfter = +columnArr[i + 1].getAttribute('column-order');
+
+      newOrder = elBefore + ((elAfter - elBefore) / 2);
+    }
+    else if (i == columnArr.length - 1) {
+      elBefore = +columnArr[i - 1].getAttribute('column-order');
+      newOrder = elBefore + 1000;
+    } else if (i == 0) {
+      elAfter = +columnArr[i + 1].getAttribute('column-order');
+
+      newOrder = elAfter / 2;
+    }
+
+    let column = this.board.columns.filter(x => x._id === event.columnId)[0];
+    column.order = newOrder;
+    this._columnService.put(column).then(res => {
+      this._ws.updateColumn(this.board._id, column);
+    });
   }
 
-  addList() {
-    const newList = <List>{
 
+  blurOnEnter(event) {
+    if (event.keyCode === 13) {
+      event.target.blur();
+    }
+  }
+
+  enableAddColumn() {
+    this.addingColumn = true;
+    let input = jQuery('.add-column')[0]
+      .getElementsByTagName('input')[0];
+
+    setTimeout(function () { input.focus(); }, 0);
+  }
+
+  addColumn() {
+    let newColumn = <Column>{
+      title: this.addColumnText,
+      order: (this.board.columns.length + 1) * 1000,
+      boardId: this.board._id
     };
+    this._columnService.post(newColumn)
+      .subscribe(column => {
+        this.board.columns.push(column)
+        console.log('column added');
+        this.updateBoardWidth();
+        this.addColumnText = '';
+        this._ws.addColumn(this.board._id, column);
+      });
+  }
+
+  addColumnOnEnter(event: KeyboardEvent) {
+    if (event.keyCode === 13) {
+      if (this.addColumnText && this.addColumnText.trim() !== '') {
+        this.addColumn();
+      } else {
+        this.clearAddColumn();
+      }
+    }
+    else if (event.keyCode === 27) {
+      this.clearAddColumn();
+    }
+  }
+
+  addColumnOnBlur() {
+    if (this.addColumnText && this.addColumnText.trim() !== '') {
+      this.addColumn();
+    }
+    this.clearAddColumn();
+  }
+
+  clearAddColumn() {
+    this.addingColumn = false;
+    this.addColumnText = '';
+  }
+
+
+  addCard(card: Card) {
+    this.board.cards.push(card);
+  }
+
+  foreceUpdateCards() {
+    var cards = JSON.stringify(this.board.cards);
+    this.board.cards = JSON.parse(cards);
+  }
+
+
+  onCardUpdate(card: Card) {
+    this.foreceUpdateCards();
   }
 }
