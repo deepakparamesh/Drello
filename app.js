@@ -3,7 +3,7 @@ var express = require('express')
     , bodyParser = require('body-parser')
     , methodOverride = require('method-override')
     , app = express()
-    , port = process.env.PORT || 8080
+    , port = process.env.PORT || 3000
     , router = express.Router()
     , log = require('./dev-logger.js')
     , cors = require('cors');
@@ -39,7 +39,9 @@ router.get('/b/:id', function(req, res, next) {
 
 app.use('/', router);
 
-var mongoUri = process.env.MONGO_URI || 'mongodb://localhost/gtm';
+// mongodb://localhost/gtm
+// 
+var mongoUri = process.env.MONGO_URI || 'mongodb + srv://deepak:deepak@cluster0-jm7mm.mongodb.net/test?retryWrites=true&w=majority';
 
 console.log(mongoUri);
 var mongoose = require('mongoose');
