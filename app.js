@@ -14,7 +14,7 @@ var server = require('http').createServer(app);
 
 var ws = require('./ws.js')(server, true);
 
-app.use(express.static(__dirname + '/dist')); // set the static files location for the static html
+app.use(express.static(__dirname + '/public')); // set the static files location for the static html
 // app.use(express.static(__dirname + '/public')); // set the static files location /public/img will be /img for users
 // You can set morgan to log differently depending on your environment
 if (process.env.NODE_ENV === 'production') {
@@ -30,11 +30,11 @@ app.use(bodyParser.urlencoded({
 app.use(methodOverride());                  // simulate DELETE and PUT
 
 router.get('/', function(req, res, next) {
-    res.sendFile(__dirname + '/dist/index.html');
+    res.sendFile(__dirname + '/public/index.html');
 });
 
 router.get('/b/:id', function(req, res, next) {
-    res.sendFile(__dirname + '/dist/index.html');
+    res.sendFile(__dirname + '/public/index.html');
 });
 
 app.use('/', router);
