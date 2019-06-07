@@ -6,9 +6,8 @@ var express = require('express')
     , port = process.env.PORT || 3000
     , router = express.Router()
     , log = require('./dev-logger.js')
-    , cors = require('cors')
-    , mongoClient = require('mongodb').MongoClient;
-    
+    , cors = require('cors');
+
 app.use(cors());
 
 var server = require('http').createServer(app);
