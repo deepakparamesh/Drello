@@ -47,7 +47,6 @@ export class BoardService {
 
   post(board: Board) {
     let body = JSON.stringify(board);
-    
     return this._http.post(this.apiUrl, body)
       .map((res: Response) => <Board>res.json().data);
   }
