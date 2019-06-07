@@ -8,5 +8,6 @@
         [style.display]="editingCard ? '' : 'none' "
         (keydown)="blurOnEnter($event)"
         (blur)="updateCard()"
-        [(ngModel)]="card.title" ></textarea>
+        [(ngModel)]="card.title" >
+    </textarea>
 </li>
