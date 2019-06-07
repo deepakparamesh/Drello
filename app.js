@@ -1,53 +1,65 @@
-const express = require('express');
-const path = require('path');
-const bodyParser = require('body-parser');
-const cors = require('cors');
-const mongoose = require('mongoose');
-const config = require('./config/database');
-const users = require('./routes/users');
-const boards = require('./routes/boards');
-const lists = require('./routes/lists');
-const cards = require('./routes/cards');
-
-// connect to database
-mongoose.connect(config.database , {useNewUrlParser: true});
-
-// On connection
-mongoose.connection.on('connected', () => {
-  console.log('connected to database ' +  config.database);
-});
-
-
-// on error connection
-mongoose.connection.on('error', (err) => {
-  console.log('database error: ' + err);
-});
-
-const app = express();
-
-// Port Number
-const port = 3000;
-
-// CORS Middleware
+var express = require('express')
+    , morgan = require('morgan')
+    , bodyParser = require('body-parser')
+    , methodOverride = require('method-override')
+    , app = express()
+    , port = process.env.PORT || 3000
+    , router = express.Router()
+    , log = require('./dev-logger.js')
+    , cors = require('cors');
+    
 app.use(cors());
 
-//Body Parser Middleware
+var server = require('http').createServer(app);
+
+var ws = require('./ws.js')(server, true);
+
+app.use(express.static(__dirname + '/dist')); // set the static files location for the static html
+// app.use(express.static(__dirname + '/public')); // set the static files location /public/img will be /img for users
+// You can set morgan to log differently depending on your environment
+if (process.env.NODE_ENV === 'production') {
+  app.use(morgan('common', { skip: function(req, res) { return res.statusCode < 400 }, stream: __dirname + '/../morgan.log' }));
+} else {
+  app.use(morgan('dev', {skip: function(req, res) { return res.statusCode < 400 }}));
+}
 app.use(bodyParser.json());
-app.use('/users', users);
-app.use('/boards', boards);
-app.use('/lists', lists);
-app.use('/cards', cards);
+app.use(bodyParser.urlencoded({
+    extended: true
+}));
 
-// Index Route
-app.get('/', (req, res) => {
-  res.send('invalid EndPoint');
+app.use(methodOverride());                  // simulate DELETE and PUT
+
+router.get('/', function(req, res, next) {
+    res.sendFile(__dirname + '/dist/index.html');
 });
 
-
-// Start Server
-app.listen(port, () => {
-  console.log('server started on port' + port);
+router.get('/b/:id', function(req, res, next) {
+    res.sendFile(__dirname + '/dist/index.html');
 });
 
-// Set static folder
-app.use(express.static(path.join(__dirname, 'public')))
+app.use('/', router);
+
+var mongoUri = process.env.MONGO_URI || 'mongodb://localhost/gtm';
+
+console.log(mongoUri);
+var mongoose = require('mongoose');
+mongoose.Promise = global.Promise;
+mongoose.connect(mongoUri).then(function (db){
+  // Provisional code, for runing db.dropDatabase() every sunday
+    if (new Date().getDay() == 0) {
+      mongoose.connection.db.dropDatabase(function (){
+        log('db droped');
+      });
+    }
+}).catch(function(err){
+    log('Unabled to connect to mongodb err:', err);
+    log('Check if MongoDB Server is running and available.');
+});
+
+var cardRoutes = require('./api/routes/card.routes.js')(app);
+var columnRoutes = require('./api/routes/column.routes.js')(app);
+var boardRoutes = require('./api/routes/board.routes.js')(app);
+
+server.listen(port, function () {
+  log('App running on port', port);
+});
