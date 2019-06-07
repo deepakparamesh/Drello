@@ -41,27 +41,19 @@ router.get('/b/:id', function(req, res, next) {
 app.use('/', router);
 
 // mongodb://localhost/gtm
-// 
+// mongodb+srv://deepak:deepak@cluster0-jm7mm.mongodb.net/test?retryWrites=true&w=majority
 var mongoUri = process.env.MONGO_URI || 'mongodb+srv://deepak:deepak@cluster0-jm7mm.mongodb.net/test?retryWrites=true&w=majority';
 
 var mongoose = require('mongoose');
 mongoose.Promise = global.Promise;
-// mongoose.connect(mongoUri.toString()).then(function (db){
-//     if (new Date().getDay() == 0) {
-//       mongoose.connection.db.dropDatabase(function (){
-//         log('db droped');
-//       });
-//     }
-// }).catch(function(err){
-//     log('Unabled to connect to mongodb err:', err);
-//     log('Check if MongoDB Server is running and available.');
-// });
 
-mongoClient.connect(mongoUri, (error, client) => {
-  if(error) {
-    throw error;
-  }
-})
+mongoose.connect(mongoUri);
+mongoose.connection.on('connected', () => {
+  console.log('Connected to Database ' + mongoUri);
+});
+mongoose.connection.on('error', (err) => {
+  console.log('Database error ' + err);
+});
 
 var cardRoutes = require('./api/routes/card.routes.js')(app);
 var columnRoutes = require('./api/routes/column.routes.js')(app);
