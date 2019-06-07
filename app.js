@@ -6,7 +6,8 @@ var express = require('express')
     , port = process.env.PORT || 3000
     , router = express.Router()
     , log = require('./dev-logger.js')
-    , cors = require('cors');
+    , cors = require('cors')
+    , mongoClient = require('mongodb').MongoClient;
     
 app.use(cors());
 
@@ -41,22 +42,26 @@ app.use('/', router);
 
 // mongodb://localhost/gtm
 // 
-var mongoUri = process.env.MONGO_URI || 'mongodb + srv://deepak:deepak@cluster0-jm7mm.mongodb.net/test?retryWrites=true&w=majority';
+var mongoUri = process.env.MONGO_URI || 'mongodb+srv://deepak:deepak@cluster0-jm7mm.mongodb.net/test?retryWrites=true&w=majority';
 
-console.log(mongoUri);
 var mongoose = require('mongoose');
 mongoose.Promise = global.Promise;
-mongoose.connect(mongoUri).then(function (db){
-  // Provisional code, for runing db.dropDatabase() every sunday
-    if (new Date().getDay() == 0) {
-      mongoose.connection.db.dropDatabase(function (){
-        log('db droped');
-      });
-    }
-}).catch(function(err){
-    log('Unabled to connect to mongodb err:', err);
-    log('Check if MongoDB Server is running and available.');
-});
+// mongoose.connect(mongoUri.toString()).then(function (db){
+//     if (new Date().getDay() == 0) {
+//       mongoose.connection.db.dropDatabase(function (){
+//         log('db droped');
+//       });
+//     }
+// }).catch(function(err){
+//     log('Unabled to connect to mongodb err:', err);
+//     log('Check if MongoDB Server is running and available.');
+// });
+
+mongoClient.connect(mongoUri, (error, client) => {
+  if(error) {
+    throw error;
+  }
+})
 
 var cardRoutes = require('./api/routes/card.routes.js')(app);
 var columnRoutes = require('./api/routes/column.routes.js')(app);
