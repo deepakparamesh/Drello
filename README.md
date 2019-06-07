@@ -16,3 +16,7 @@ To run this application locally you need following
   Go to the folder name frontend and run
  `ng serve`
   Make sure you have run the MongoDB in your local system
+
+## Screenshots
+![Board](https://github.com/deepakparamesh/Drello/tree/master/screenshots/board.png)
+![List](https://github.com/deepakparamesh/Drello/tree/master/screenshots/list.png)
