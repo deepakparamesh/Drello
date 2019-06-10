@@ -18,5 +18,5 @@ To run this application locally you need following
   Make sure you have run the MongoDB in your local system
 
 ## Screenshots
-![Board](https://github.com/deepakparamesh/Drello/tree/master/screenshots/board.png)
-![List](https://github.com/deepakparamesh/Drello/tree/master/screenshots/list.png)
+![alt text](https://github.com/deepakparamesh/Drello/tree/master/screenshots/board.png)
+![alt text](https://github.com/deepakparamesh/Drello/tree/master/screenshots/list.png)
