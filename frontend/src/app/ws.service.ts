@@ -2,7 +2,7 @@ import {Injectable, EventEmitter} from '@angular/core';
 import {Board} from './board/board';
 import {Column} from './column/column';
 import {Card} from './card/card';
-import { ROOT_URL } from './constants'
+import { SOCKET_URL } from './constants'
 
 declare var io;
 
@@ -22,7 +22,7 @@ export class WebSocketService {
   }
 
   connect(){
-    this.socket = io(ROOT_URL);
+    this.socket = io(SOCKET_URL);
 
     this.socket.on('addColumn', data => {
       this.onColumnAdd.emit(<Column>data.column);
