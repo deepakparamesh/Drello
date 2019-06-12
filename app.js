@@ -7,6 +7,9 @@ var express = require('express')
     , router = express.Router()
     , log = require('./dev-logger.js')
     , cors = require('cors');
+const boardRoutes = require('./api/routes/board.routes');
+const columnRoutes = require('./api/routes/column.routes');
+const cardRoutes = require('./api/routes/card.routes');
 
 app.use(cors());
 
@@ -54,9 +57,9 @@ mongoose.connection.on('error', (err) => {
   console.log('Database error ' + err);
 });
 
-var cardRoutes = require('./api/routes/card.routes.js')(app);
-var columnRoutes = require('./api/routes/column.routes.js')(app);
-var boardRoutes = require('./api/routes/board.routes.js')(app);
+app.use('/board', boardRoutes);
+app.use('/column', columnRoutes);
+app.use('/card', cardRoutes);
 
 server.listen(port, function () {
   log('App running on port', port);
