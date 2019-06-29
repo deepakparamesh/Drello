@@ -3,7 +3,8 @@ mongoose.Promise = global.Promise;
 
 console.log('inializing Schema');
 var boardSchema = mongoose.Schema({
-    title: String
+    title: String,
+    _user: String
 });
 console.log('exporting Schema');
 module.exports = mongoose.model('Board', boardSchema);

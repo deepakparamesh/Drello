@@ -10,6 +10,7 @@ var express = require('express')
 const boardRoutes = require('./api/routes/board.routes');
 const columnRoutes = require('./api/routes/column.routes');
 const cardRoutes = require('./api/routes/card.routes');
+const UserRoutes = require('./api/routes/user.routes');
 
 app.use(cors());
 
@@ -44,7 +45,7 @@ app.use('/', router);
 
 // mongodb://localhost/gtm
 // mongodb+srv://deepak:deepak@cluster0-jm7mm.mongodb.net/test?retryWrites=true&w=majority
-var mongoUri = process.env.MONGO_URI || 'mongodb+srv://deepak:deepak@cluster0-jm7mm.mongodb.net/test?retryWrites=true&w=majority';
+var mongoUri = process.env.MONGO_URI || 'mongodb://localhost/gtm';
 
 var mongoose = require('mongoose');
 mongoose.Promise = global.Promise;
@@ -60,6 +61,7 @@ mongoose.connection.on('error', (err) => {
 app.use('/board', boardRoutes);
 app.use('/column', columnRoutes);
 app.use('/card', cardRoutes);
+app.use('/user', UserRoutes);
 
 server.listen(port, function () {
   log('App running on port', port);

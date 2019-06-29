@@ -15,7 +15,7 @@ export class BoardService {
   }
 
   getAll() {
-    return this._http.get(this.apiUrl).map((res: Response) => <Board[]>res.json().data);
+    return this._http.get(this.apiUrl + '/deepak').map((res: Response) => <Board[]>res.json().data);
   }
 
   get(id: string) {
