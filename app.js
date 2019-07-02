@@ -45,7 +45,7 @@ app.use('/', router);
 
 // mongodb://localhost/gtm
 // mongodb+srv://deepak:deepak@cluster0-jm7mm.mongodb.net/test?retryWrites=true&w=majority
-var mongoUri = process.env.MONGO_URI || 'mongodb://localhost/gtm';
+var mongoUri = process.env.MONGO_URI || 'mongodb+srv://deepak:deepak@cluster0-jm7mm.mongodb.net/test?retryWrites=true&w=majority';
 
 var mongoose = require('mongoose');
 mongoose.Promise = global.Promise;
