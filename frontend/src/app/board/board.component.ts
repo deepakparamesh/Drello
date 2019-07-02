@@ -35,8 +35,8 @@ export class BoardComponent implements OnInit, OnDestroy {
     private _boardService: BoardService,
     private _columnService: ColumnService,
     private _router: Router,
-    private _route: ActivatedRoute,
-    ) {
+    private _route: ActivatedRoute
+  ) {
   }
 
   ngOnInit() {
@@ -68,7 +68,7 @@ export class BoardComponent implements OnInit, OnDestroy {
       });
   }
 
-  ngOnDestroy(){
+  ngOnDestroy() {
     console.log(`leaving board ${this.board._id}`);
     this._ws.leave(this.board._id);
   }

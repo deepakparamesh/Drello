@@ -4,10 +4,7 @@ import { NgModule } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { HttpModule } from '@angular/http';
 import { RouterModule, Routes } from '@angular/router';
-<<<<<<< HEAD
 
-=======
->>>>>>> d6c1a385d38b0ce188df13e552f006f8b2299d15
 // PROVIDERS
 import { BoardService } from './board/board.service';
 import { CardService } from './card/card.service';
