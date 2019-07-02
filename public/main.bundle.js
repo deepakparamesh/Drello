@@ -27,7 +27,7 @@ module.exports = "header {\r\n  position: fixed;\r\n  width: 100%;\r\n  top: 0;\
 /***/ "./src/app/app.component.html":
 /***/ (function(module, exports) {
 
-module.exports = "<header>\r\n<nav>\r\n    <a class=\"btn\" [routerLink]=\"['']\">|||| Boards</a>\r\n    <a class=\"logo\">Drello</a>\r\n</nav>\r\n</header>\r\n<div id=\"content-wrapper\">\r\n  <router-outlet></router-outlet>\r\n</div>"
+module.exports = "<header>\r\n<app-navbar> </app-navbar>\r\n</header>\r\n<div id=\"content-wrapper\">\r\n  <router-outlet></router-outlet>\r\n</div>"
 
 /***/ }),
 
@@ -62,7 +62,7 @@ var AppComponent = (function () {
     ], AppComponent);
     return AppComponent;
 }());
-//# sourceMappingURL=D:/Drello/drello/frontend/src/app.component.js.map
+//# sourceMappingURL=D:/Drello/drello-latest/Drello/frontend/src/app.component.js.map
 
 /***/ }),
 
@@ -88,6 +88,8 @@ var AppComponent = (function () {
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_14__card_card_component__ = __webpack_require__("./src/app/card/card.component.ts");
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_15__pipes_orderby_pipe__ = __webpack_require__("./src/app/pipes/orderby.pipe.ts");
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_16__pipes_where_pipe__ = __webpack_require__("./src/app/pipes/where.pipe.ts");
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_17__app_service__ = __webpack_require__("./src/app/app.service.ts");
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_18__navbar_navbar_component__ = __webpack_require__("./src/app/navbar/navbar.component.ts");
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
@@ -97,6 +99,8 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
+
+
 
 
 
@@ -131,6 +135,7 @@ var AppModule = (function () {
                 __WEBPACK_IMPORTED_MODULE_14__card_card_component__["a" /* CardComponent */],
                 __WEBPACK_IMPORTED_MODULE_15__pipes_orderby_pipe__["a" /* OrderBy */],
                 __WEBPACK_IMPORTED_MODULE_16__pipes_where_pipe__["a" /* Where */],
+                __WEBPACK_IMPORTED_MODULE_18__navbar_navbar_component__["a" /* NavbarComponent */],
             ],
             imports: [
                 __WEBPACK_IMPORTED_MODULE_0__angular_platform_browser__["a" /* BrowserModule */],
@@ -138,14 +143,62 @@ var AppModule = (function () {
                 __WEBPACK_IMPORTED_MODULE_3__angular_http__["c" /* HttpModule */],
                 __WEBPACK_IMPORTED_MODULE_4__angular_router__["c" /* RouterModule */].forRoot(appRoutes)
             ],
-            providers: [__WEBPACK_IMPORTED_MODULE_8__httpclient__["a" /* HttpClient */], __WEBPACK_IMPORTED_MODULE_9__ws_service__["a" /* WebSocketService */], __WEBPACK_IMPORTED_MODULE_5__board_board_service__["a" /* BoardService */], __WEBPACK_IMPORTED_MODULE_7__column_column_service__["a" /* ColumnService */], __WEBPACK_IMPORTED_MODULE_6__card_card_service__["a" /* CardService */]],
+            providers: [__WEBPACK_IMPORTED_MODULE_8__httpclient__["a" /* HttpClient */], __WEBPACK_IMPORTED_MODULE_9__ws_service__["a" /* WebSocketService */], __WEBPACK_IMPORTED_MODULE_5__board_board_service__["a" /* BoardService */], __WEBPACK_IMPORTED_MODULE_7__column_column_service__["a" /* ColumnService */], __WEBPACK_IMPORTED_MODULE_6__card_card_service__["a" /* CardService */],
+                __WEBPACK_IMPORTED_MODULE_17__app_service__["a" /* AppService */]],
             bootstrap: [__WEBPACK_IMPORTED_MODULE_10__app_component__["a" /* AppComponent */]]
         }), 
         __metadata('design:paramtypes', [])
     ], AppModule);
     return AppModule;
 }());
-//# sourceMappingURL=D:/Drello/drello/frontend/src/app.module.js.map
+//# sourceMappingURL=D:/Drello/drello-latest/Drello/frontend/src/app.module.js.map
+
+/***/ }),
+
+/***/ "./src/app/app.service.ts":
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return AppService; });
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__angular_core__ = __webpack_require__("./node_modules/@angular/core/index.js");
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_rxjs__ = __webpack_require__("./node_modules/rxjs/Rx.js");
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_rxjs___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_1_rxjs__);
+var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
+var __metadata = (this && this.__metadata) || function (k, v) {
+    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
+};
+
+
+var AppService = (function () {
+    function AppService() {
+        this.username = localStorage.getItem('username');
+        this.usernameSource = new __WEBPACK_IMPORTED_MODULE_1_rxjs__["BehaviorSubject"](this.username);
+        this.currentUsername = this.usernameSource.asObservable();
+    }
+    AppService.prototype.setUsername = function (username) {
+        localStorage.setItem('username', username);
+        this.usernameSource.next(username);
+    };
+    AppService.prototype.getUsername = function () {
+        this.username = localStorage.getItem('username');
+        this.usernameSource.next(this.username);
+        return this.username;
+    };
+    AppService.prototype.changeUsername = function (username) {
+        this.usernameSource.next(username);
+    };
+    AppService = __decorate([
+        Object(__WEBPACK_IMPORTED_MODULE_0__angular_core__["J" /* Injectable */])(), 
+        __metadata('design:paramtypes', [])
+    ], AppService);
+    return AppService;
+}());
+//# sourceMappingURL=D:/Drello/drello-latest/Drello/frontend/src/app.service.js.map
 
 /***/ }),
 
@@ -218,6 +271,7 @@ var BoardComponent = (function () {
             .subscribe(function (data) {
             console.log("joining board " + boardId);
             _this._ws.join(boardId);
+            console.log('board ', data);
             _this.board = data[0];
             _this.board.columns = data[1];
             _this.board.cards = data[2];
@@ -420,7 +474,7 @@ var BoardComponent = (function () {
     return BoardComponent;
     var _a, _b, _c, _d, _e, _f;
 }());
-//# sourceMappingURL=D:/Drello/drello/frontend/src/board.component.js.map
+//# sourceMappingURL=D:/Drello/drello-latest/Drello/frontend/src/board.component.js.map
 
 /***/ }),
 
@@ -450,8 +504,8 @@ var BoardService = (function () {
         this.apiUrl = '/board';
         this.boardsCache = [];
     }
-    BoardService.prototype.getAll = function () {
-        return this._http.get(this.apiUrl).map(function (res) { return res.json().data; });
+    BoardService.prototype.getAll = function (username) {
+        return this._http.get(this.apiUrl + '/get/' + username).map(function (res) { return res.json().data; });
     };
     BoardService.prototype.get = function (id) {
         return this._http.get(this.apiUrl + '/' + id)
@@ -492,7 +546,7 @@ var BoardService = (function () {
     return BoardService;
     var _a;
 }());
-//# sourceMappingURL=D:/Drello/drello/frontend/src/board.service.js.map
+//# sourceMappingURL=D:/Drello/drello-latest/Drello/frontend/src/board.service.js.map
 
 /***/ }),
 
@@ -602,7 +656,7 @@ var CardComponent = (function () {
     return CardComponent;
     var _a, _b, _c, _d, _e, _f;
 }());
-//# sourceMappingURL=D:/Drello/drello/frontend/src/card.component.js.map
+//# sourceMappingURL=D:/Drello/drello-latest/Drello/frontend/src/card.component.js.map
 
 /***/ }),
 
@@ -656,7 +710,7 @@ var CardService = (function () {
     return CardService;
     var _a;
 }());
-//# sourceMappingURL=D:/Drello/drello/frontend/src/card.service.js.map
+//# sourceMappingURL=D:/Drello/drello-latest/Drello/frontend/src/card.service.js.map
 
 /***/ }),
 
@@ -670,7 +724,7 @@ var Card = (function () {
     }
     return Card;
 }());
-//# sourceMappingURL=D:/Drello/drello/frontend/src/card.js.map
+//# sourceMappingURL=D:/Drello/drello-latest/Drello/frontend/src/card.js.map
 
 /***/ }),
 
@@ -912,7 +966,7 @@ var ColumnComponent = (function () {
     return ColumnComponent;
     var _a, _b, _c, _d, _e, _f, _g;
 }());
-//# sourceMappingURL=D:/Drello/drello/frontend/src/column.component.js.map
+//# sourceMappingURL=D:/Drello/drello-latest/Drello/frontend/src/column.component.js.map
 
 /***/ }),
 
@@ -972,7 +1026,7 @@ var ColumnService = (function () {
     return ColumnService;
     var _a;
 }());
-//# sourceMappingURL=D:/Drello/drello/frontend/src/column.service.js.map
+//# sourceMappingURL=D:/Drello/drello-latest/Drello/frontend/src/column.service.js.map
 
 /***/ }),
 
@@ -986,7 +1040,7 @@ var Column = (function () {
     }
     return Column;
 }());
-//# sourceMappingURL=D:/Drello/drello/frontend/src/column.js.map
+//# sourceMappingURL=D:/Drello/drello-latest/Drello/frontend/src/column.js.map
 
 /***/ }),
 
@@ -999,9 +1053,9 @@ var Column = (function () {
 // export const ROOT_URL: string = "";
 // export const ROOT_URL: string = "http://localhost:3000/";
 // export const ROOT_URL: string = "https://shielded-bastion-10626.herokuapp.com";
-        var ROOT_URL = "https://drelloclone.herokuapp.com/";
+var ROOT_URL = "";
 var SOCKET_URL = "https://drelloclone.herokuapp.com/";
-//# sourceMappingURL=D:/Drello/drello/frontend/src/constants.js.map
+//# sourceMappingURL=D:/Drello/drello-latest/Drello/frontend/src/constants.js.map
 
 /***/ }),
 
@@ -1027,6 +1081,7 @@ module.exports = "<div class=\"boards-wrapper\">\r\n<h2>Boards</h2>\r\n<div id=\
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__angular_core__ = __webpack_require__("./node_modules/@angular/core/index.js");
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__angular_router__ = __webpack_require__("./node_modules/@angular/router/index.js");
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__board_board_service__ = __webpack_require__("./src/app/board/board.service.ts");
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3_app_app_service__ = __webpack_require__("./src/app/app.service.ts");
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
@@ -1039,25 +1094,32 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 
 
 
+
 var DashboardComponent = (function () {
-    function DashboardComponent(_bs, _router) {
+    function DashboardComponent(_bs, _router, appService) {
         this._bs = _bs;
         this._router = _router;
+        this.appService = appService;
     }
     DashboardComponent.prototype.ngOnInit = function () {
         var _this = this;
-        this.boards = [];
-        this._bs.getAll().subscribe(function (boards) {
-            _this.boards = boards;
+        this.appService.currentUsername.subscribe(function (username) {
+            _this.username = username;
+            _this.boards = [];
+            _this._bs.getAll(_this.username).subscribe(function (boards) {
+                _this.boards = boards;
+            });
+            setTimeout(function () {
+                document.getElementById('content-wrapper').style.backgroundColor = "#fff";
+            }, 0);
         });
-        setTimeout(function () {
-            document.getElementById('content-wrapper').style.backgroundColor = "#fff";
-        }, 100);
     };
     DashboardComponent.prototype.addBoard = function () {
         var _this = this;
         console.log('Adding new board');
-        this._bs.post({ title: "New board" })
+        this._bs.post({
+            title: "New board",
+            _user: this.username })
             .subscribe(function (board) {
             _this._router.navigate(['/b', board._id]);
             console.log('new board added');
@@ -1069,12 +1131,12 @@ var DashboardComponent = (function () {
             template: __webpack_require__("./src/app/dashboard/dashboard.component.html"),
             styles: [__webpack_require__("./src/app/dashboard/dashboard.component.css")],
         }), 
-        __metadata('design:paramtypes', [(typeof (_a = typeof __WEBPACK_IMPORTED_MODULE_2__board_board_service__["a" /* BoardService */] !== 'undefined' && __WEBPACK_IMPORTED_MODULE_2__board_board_service__["a" /* BoardService */]) === 'function' && _a) || Object, (typeof (_b = typeof __WEBPACK_IMPORTED_MODULE_1__angular_router__["b" /* Router */] !== 'undefined' && __WEBPACK_IMPORTED_MODULE_1__angular_router__["b" /* Router */]) === 'function' && _b) || Object])
+        __metadata('design:paramtypes', [(typeof (_a = typeof __WEBPACK_IMPORTED_MODULE_2__board_board_service__["a" /* BoardService */] !== 'undefined' && __WEBPACK_IMPORTED_MODULE_2__board_board_service__["a" /* BoardService */]) === 'function' && _a) || Object, (typeof (_b = typeof __WEBPACK_IMPORTED_MODULE_1__angular_router__["b" /* Router */] !== 'undefined' && __WEBPACK_IMPORTED_MODULE_1__angular_router__["b" /* Router */]) === 'function' && _b) || Object, (typeof (_c = typeof __WEBPACK_IMPORTED_MODULE_3_app_app_service__["a" /* AppService */] !== 'undefined' && __WEBPACK_IMPORTED_MODULE_3_app_app_service__["a" /* AppService */]) === 'function' && _c) || Object])
     ], DashboardComponent);
     return DashboardComponent;
-    var _a, _b;
+    var _a, _b, _c;
 }());
-//# sourceMappingURL=D:/Drello/drello/frontend/src/dashboard.component.js.map
+//# sourceMappingURL=D:/Drello/drello-latest/Drello/frontend/src/dashboard.component.js.map
 
 /***/ }),
 
@@ -1141,7 +1203,92 @@ var HttpClient = (function () {
     return HttpClient;
     var _a;
 }());
-//# sourceMappingURL=D:/Drello/drello/frontend/src/httpclient.js.map
+//# sourceMappingURL=D:/Drello/drello-latest/Drello/frontend/src/httpclient.js.map
+
+/***/ }),
+
+/***/ "./src/app/navbar/navbar.component.css":
+/***/ (function(module, exports) {
+
+module.exports = "header {\r\n  position: fixed;\r\n  width: 100%;\r\n  top: 0;\r\n}\r\n\r\n\r\nnav {\r\n  background-color: #0067A3;\r\n  padding: 5px;\r\n  height: 30px;\r\n}\r\n\r\n\r\nnav a {\r\n  float: left;  \r\n  color: white; \r\n}\r\n\r\n\r\nnav a.btn {\r\n  background-color:#4590BC;\r\n  width: 80px;\r\n}\r\n\r\n\r\nnav a.logo{\r\n  line-height: 30px;\r\n  font-weight: bold;\r\n  color:#7FB2D1;\r\n  width: calc(100% - 200px);\r\n  text-align: center;\r\n  /*margin-top: -30px;*/\r\n}\r\n\r\n\r\nnav a.username {\r\n  float: right;\r\n  font-weight: 600;\r\n  padding: 5px 23px;\r\n}\r\n"
+
+/***/ }),
+
+/***/ "./src/app/navbar/navbar.component.html":
+/***/ (function(module, exports) {
+
+module.exports = "<nav>\n  <a class=\"btn\" [routerLink]=\"['']\">|||| Boards</a>\n  <a class=\"logo\">Drello</a>\n  <a class=\"username\" (click)=\"openModal()\">{{username}}</a>\n</nav>"
+
+/***/ }),
+
+/***/ "./src/app/navbar/navbar.component.ts":
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return NavbarComponent; });
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__angular_core__ = __webpack_require__("./node_modules/@angular/core/index.js");
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_app_app_service__ = __webpack_require__("./src/app/app.service.ts");
+var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
+var __metadata = (this && this.__metadata) || function (k, v) {
+    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
+};
+
+
+var NavbarComponent = (function () {
+    function NavbarComponent(appService) {
+        this.appService = appService;
+    }
+    NavbarComponent.prototype.ngOnInit = function () {
+        var _this = this;
+        this.appService.currentUsername.subscribe(function (username) {
+            if (!username) {
+                var user = prompt('Enter an existing or new username', '');
+                if (user === '' || user === null) {
+                    _this.username = 'public';
+                    localStorage.setItem('username', 'public');
+                    _this.appService.changeUsername(_this.username);
+                }
+                else {
+                    _this.username = user;
+                    localStorage.setItem('username', user);
+                    _this.appService.changeUsername(_this.username);
+                }
+            }
+            else {
+                _this.username = username;
+            }
+        });
+    };
+    NavbarComponent.prototype.openModal = function () {
+        var username = prompt('Enter an existing or new username', '');
+        if (username === '' || username === null) {
+            this.username = 'public';
+            localStorage.setItem('username', 'public');
+            this.appService.changeUsername(this.username);
+        }
+        else {
+            this.username = username;
+            localStorage.setItem('username', username);
+            this.appService.changeUsername(username);
+        }
+    };
+    NavbarComponent = __decorate([
+        Object(__WEBPACK_IMPORTED_MODULE_0__angular_core__["v" /* Component */])({
+            selector: 'app-navbar',
+            template: __webpack_require__("./src/app/navbar/navbar.component.html"),
+            styles: [__webpack_require__("./src/app/navbar/navbar.component.css")]
+        }), 
+        __metadata('design:paramtypes', [(typeof (_a = typeof __WEBPACK_IMPORTED_MODULE_1_app_app_service__["a" /* AppService */] !== 'undefined' && __WEBPACK_IMPORTED_MODULE_1_app_app_service__["a" /* AppService */]) === 'function' && _a) || Object])
+    ], NavbarComponent);
+    return NavbarComponent;
+    var _a;
+}());
+//# sourceMappingURL=D:/Drello/drello-latest/Drello/frontend/src/navbar.component.js.map
 
 /***/ }),
 
@@ -1238,7 +1385,7 @@ var OrderBy = (function () {
     ], OrderBy);
     return OrderBy;
 }());
-//# sourceMappingURL=D:/Drello/drello/frontend/src/orderby.pipe.js.map
+//# sourceMappingURL=D:/Drello/drello-latest/Drello/frontend/src/orderby.pipe.js.map
 
 /***/ }),
 
@@ -1288,7 +1435,7 @@ var Where = (function () {
     ], Where);
     return Where;
 }());
-//# sourceMappingURL=D:/Drello/drello/frontend/src/where.pipe.js.map
+//# sourceMappingURL=D:/Drello/drello-latest/Drello/frontend/src/where.pipe.js.map
 
 /***/ }),
 
@@ -1357,7 +1504,7 @@ var WebSocketService = (function () {
     ], WebSocketService);
     return WebSocketService;
 }());
-//# sourceMappingURL=D:/Drello/drello/frontend/src/ws.service.js.map
+//# sourceMappingURL=D:/Drello/drello-latest/Drello/frontend/src/ws.service.js.map
 
 /***/ }),
 
@@ -1373,7 +1520,7 @@ var WebSocketService = (function () {
 var environment = {
     production: false
 };
-//# sourceMappingURL=D:/Drello/drello/frontend/src/environment.js.map
+//# sourceMappingURL=D:/Drello/drello-latest/Drello/frontend/src/environment.js.map
 
 /***/ }),
 
@@ -1396,7 +1543,7 @@ if (__WEBPACK_IMPORTED_MODULE_3__environments_environment__["a" /* environment *
     Object(__WEBPACK_IMPORTED_MODULE_2__angular_core__["_28" /* enableProdMode */])();
 }
 Object(__WEBPACK_IMPORTED_MODULE_1__angular_platform_browser_dynamic__["a" /* platformBrowserDynamic */])().bootstrapModule(__WEBPACK_IMPORTED_MODULE_4__app_app_module__["a" /* AppModule */]);
-//# sourceMappingURL=D:/Drello/drello/frontend/src/main.js.map
+//# sourceMappingURL=D:/Drello/drello-latest/Drello/frontend/src/main.js.map
 
 /***/ }),
 
@@ -1452,7 +1599,7 @@ Object(__WEBPACK_IMPORTED_MODULE_1__angular_platform_browser_dynamic__["a" /* pl
 
 
 
-//# sourceMappingURL=D:/Drello/drello/frontend/src/polyfills.js.map
+//# sourceMappingURL=D:/Drello/drello-latest/Drello/frontend/src/polyfills.js.map
 
 /***/ }),
 
