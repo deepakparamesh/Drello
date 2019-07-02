@@ -1053,7 +1053,7 @@ var Column = (function () {
 // export const ROOT_URL: string = "";
 // export const ROOT_URL: string = "http://localhost:3000/";
 // export const ROOT_URL: string = "https://shielded-bastion-10626.herokuapp.com";
-var ROOT_URL = "";
+var ROOT_URL = "https://drelloclone.herokuapp.com/";
 var SOCKET_URL = "https://drelloclone.herokuapp.com/";
 //# sourceMappingURL=D:/Drello/drello-latest/Drello/frontend/src/constants.js.map
 
