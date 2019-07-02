@@ -4,7 +4,7 @@ const boardController = require('../controller/board.controller');
 
 router.post('/', boardController.createBoard);
 
-router.get('/:name', boardController.getBoards);
+router.get('/get/:name', boardController.getBoards);
 
 router.get('/:id', boardController.getBoardById);
 

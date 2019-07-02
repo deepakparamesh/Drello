@@ -35,8 +35,7 @@ export class BoardComponent implements OnInit, OnDestroy {
     private _boardService: BoardService,
     private _columnService: ColumnService,
     private _router: Router,
-    private _route: ActivatedRoute
-  ) {
+    private _route: ActivatedRoute) {
   }
 
   ngOnInit() {
@@ -59,7 +58,8 @@ export class BoardComponent implements OnInit, OnDestroy {
       .subscribe(data => {
         console.log(`joining board ${boardId}`);
         this._ws.join(boardId);
-
+        console.log('board ', data);
+        
         this.board = data[0];
         this.board.columns = data[1];
         this.board.cards = data[2];
@@ -68,7 +68,7 @@ export class BoardComponent implements OnInit, OnDestroy {
       });
   }
 
-  ngOnDestroy() {
+  ngOnDestroy(){
     console.log(`leaving board ${this.board._id}`);
     this._ws.leave(this.board._id);
   }

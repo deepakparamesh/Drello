@@ -4,7 +4,6 @@ import { NgModule } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { HttpModule } from '@angular/http';
 import { RouterModule, Routes } from '@angular/router';
-
 // PROVIDERS
 import { BoardService } from './board/board.service';
 import { CardService } from './card/card.service';
@@ -22,8 +21,8 @@ import { CardComponent } from './card/card.component';
 // PIPES
 import { OrderBy } from './pipes/orderby.pipe';
 import { Where } from './pipes/where.pipe';
-import { NavbarComponent } from './navbar/navbar.component';
 import { AppService } from './app.service';
+import { NavbarComponent } from './navbar/navbar.component';
 
 const appRoutes: Routes = [
   { path: 'b/:id', component: BoardComponent },
@@ -45,10 +44,10 @@ const appRoutes: Routes = [
     BrowserModule,
     FormsModule,
     HttpModule,
-    RouterModule.forRoot(appRoutes),
+    RouterModule.forRoot(appRoutes)
   ],
-  providers: [HttpClient, AppService,
-    WebSocketService, BoardService, ColumnService, CardService],
+  providers: [HttpClient, WebSocketService, BoardService, ColumnService, CardService,
+    AppService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

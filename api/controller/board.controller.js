@@ -20,7 +20,7 @@ exports.createBoard = (req, res) => {
 exports.getBoards = (req, res) => {
   /* Read */
   log('GET /board');
-  Board.find({ "_user": req.params.name},function (err, boards) {
+  Board.find({ "_user": req.params.name },function (err, boards) {
     if (err) {
       res.json({ info: 'error during find boards', error: err });
     };

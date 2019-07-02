@@ -46,6 +46,7 @@ export class CardComponent implements OnInit {
   editCard() {
     this.editingCard = true;
     this.currentTitle = this.card.title;
+
     let textArea = this.el.nativeElement.getElementsByTagName('textarea')[0];
 
     setTimeout(function() {

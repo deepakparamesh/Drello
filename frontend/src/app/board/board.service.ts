@@ -15,7 +15,7 @@ export class BoardService {
   }
 
   getAll(username: string) {
-    return this._http.get(this.apiUrl + '/' + username).map((res: Response) => <Board[]>res.json().data);
+    return this._http.get(this.apiUrl + '/get/' + username).map((res: Response) => <Board[]>res.json().data);
   }
 
   get(id: string) {

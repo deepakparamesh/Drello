@@ -33,8 +33,7 @@ export class ColumnService {
       .toPromise();
   }
 
-  post(column: Column) {
-    console.log(column);
+  post(column: Column) {;
     return this._http.post(this.apiUrl, JSON.stringify(column))
       .map(res => <Column>res.json().data);
   }
